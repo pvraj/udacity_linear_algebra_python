@@ -184,3 +184,6 @@ Temporary Items
 
 # ignore all idea files (added by Partha)
 .idea
+
+# ignore bin directory and everything generated in it (added by Partha)
+bin/

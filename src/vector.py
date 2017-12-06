@@ -4,6 +4,8 @@ Starter code downloaded from Udacity class page.
 -Modifications by Partha Rajendra.
 
 '''
+from math import sqrt, pow
+
 class Vector(object):
     def __init__(self, coordinates):
         try:
@@ -59,12 +61,34 @@ class Vector(object):
         scaled_vector = [scalar*x for x in self.coordinates]
         return Vector(scaled_vector)
 
+    def magnitude(self) -> float:
+        '''
+        Description: Output the magnitude of the vector.
+        :return: (float) Magnitude of the vector.
+        '''
+        magnitude = 0
+        for coordinate in self.coordinates:
+            magnitude += pow(coordinate, 2)
+        return sqrt(magnitude)
+
+    def normalization(self) -> 'Vector':
+        '''
+        Description: Output the normalization (normalized vector) of the current vector.
+        :return: (Vector) Normalized vector.
+        '''
+        magnitude = self.magnitude()
+        return self * (1 / magnitude)
+
 
 
 v1 = Vector([1, 2, 3])
 v2 = Vector([4, 5, 6])
-print("v1 + v2: %s" % (v1 + v2))
-print("v1 - v2: %s" % (v1 - v2))
-print(v1 == v2)
+# print("v1 + v2: %s" % (v1 + v2))
+# print("v1 - v2: %s" % (v1 - v2))
+# print(v1 == v2)
 # in order to do (scalar * vector) instead of (vector * scalar), do we need to override the * operator for real numbers also?
-print("3 * v1 = %s" % (v1 * 3))
+# print("3 * v1 = %s" % (v1 * 3))
+
+v3 = Vector([2, 3])
+print("the magnitude is: %s" % v3.magnitude())
+print("the normalized vector is: %s" % v3.normalization())
