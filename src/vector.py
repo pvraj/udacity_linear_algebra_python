@@ -66,29 +66,30 @@ class Vector(object):
         Description: Output the magnitude of the vector.
         :return: (float) Magnitude of the vector.
         '''
-        magnitude = 0
+        squared_sum = 0
         for coordinate in self.coordinates:
-            magnitude += pow(coordinate, 2)
-        return sqrt(magnitude)
+            squared_sum += pow(coordinate, 2)
+        return sqrt(squared_sum)
 
     def normalization(self) -> 'Vector':
         '''
         Description: Output the normalization (normalized vector) of the current vector.
         :return: (Vector) Normalized vector.
         '''
-        magnitude = self.magnitude()
-        return self * (1 / magnitude)
+        try:
+            magnitude = self.magnitude()
+            return self * (1 / magnitude)
+        except ZeroDivisionError:
+            raise Exception("Cannot normalize the zero vector.")
 
+v1 = Vector([-0.221, 7.437])
+v2 = Vector([8.813, -1.331, -6.247])
+v3 = Vector([5.581, -2.136])
+v4 = Vector([1.996, 3.108, -4.554])
+v5 = Vector([0, 0])
 
-
-v1 = Vector([1, 2, 3])
-v2 = Vector([4, 5, 6])
-# print("v1 + v2: %s" % (v1 + v2))
-# print("v1 - v2: %s" % (v1 - v2))
-# print(v1 == v2)
-# in order to do (scalar * vector) instead of (vector * scalar), do we need to override the * operator for real numbers also?
-# print("3 * v1 = %s" % (v1 * 3))
-
-v3 = Vector([2, 3])
-print("the magnitude is: %s" % v3.magnitude())
-print("the normalized vector is: %s" % v3.normalization())
+print(v5.normalization())
+print(v1.magnitude())
+print(v2.magnitude())
+print(v3.normalization())
+print(v4.normalization())
