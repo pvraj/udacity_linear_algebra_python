@@ -4,7 +4,7 @@ Starter code downloaded from Udacity class page.
 -Modifications by Partha Rajendra.
 
 '''
-from math import sqrt, pow
+from math import sqrt, pow, acos, degrees
 
 class Vector(object):
     def __init__(self, coordinates):
@@ -82,14 +82,41 @@ class Vector(object):
         except ZeroDivisionError:
             raise Exception("Cannot normalize the zero vector.")
 
-v1 = Vector([-0.221, 7.437])
-v2 = Vector([8.813, -1.331, -6.247])
-v3 = Vector([5.581, -2.136])
-v4 = Vector([1.996, 3.108, -4.554])
-v5 = Vector([0, 0])
+    def dot_product(self, w) -> float:
+        '''
+        Description: Return the dot product of 2 vectors.
+        :param w: (Vector) Vector to multiply by.
+        :return: (float) Dot product of 2 vectors.
+        '''
+        if self.dimension != w.dimension:
+            raise Exception("Error in dot product operation: Vector dimensions are not equal.")
+        else:
+            sum = 0 # constant space
+            for x,y in zip(self.coordinates, w.coordinates): # linear time
+                sum += x*y
+            return sum
 
-print(v5.normalization())
-print(v1.magnitude())
-print(v2.magnitude())
-print(v3.normalization())
-print(v4.normalization())
+    def angle(self, w) -> list:
+        '''
+        Description: Return the angle between 2 vectors
+        :param w: (Vector) The second vector.
+        :return: (list) The first element in the list is the angle in radians; the second element in the list is the quantity in degrees.
+        '''
+        theta_radians = acos((self.dot_product(w) / (self.magnitude() * w.magnitude())))
+        return [theta_radians, degrees(theta_radians)]
+
+
+v1 = Vector([7.887, 4.138])
+w1 = Vector([-8.802, 6.776])
+v2 = Vector([-5.955, -4.904, -1.874])
+w2 = Vector([-4.496, -8.755, 7.103])
+print(v1.dot_product(w1))
+print(v2.dot_product(w2))
+
+v3 = Vector([3.183, -7.627])
+w3 = Vector([-2.668, 5.319])
+print(v3.angle(w3)[0])
+v4 = Vector([7.35, 0.221, 5.188])
+w4 = Vector([2.751, 8.259, 3.985])
+print(v4.angle(w4)[1])
+
