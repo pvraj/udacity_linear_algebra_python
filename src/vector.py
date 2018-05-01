@@ -69,7 +69,7 @@ class Vector(object):
         '''
         squared_sum = Decimal(0.0)
         for coordinate in self.coordinates:
-            squared_sum += pow(coordinate, 2)
+            squared_sum += Decimal(pow(coordinate, 2))
         return Decimal(sqrt(squared_sum))
 
     def normalization(self) -> 'Vector':
@@ -83,7 +83,7 @@ class Vector(object):
         except ZeroDivisionError:
             raise Exception("Cannot normalize the zero vector.")
 
-    def dot_product(self, w) -> Decimal:
+    def dot_product(self, w: 'Vector') -> Decimal:
         '''
         Description: Return the dot product of 2 vectors.
         :param w: (Vector) Vector to multiply by.
@@ -97,7 +97,7 @@ class Vector(object):
                 sum_of_products += x*y
             return sum_of_products
 
-    def angle(self, w) -> list:
+    def angle(self, w: 'Vector') -> list:
         '''
         Description: Return the angle between 2 vectors
         :param w: (Vector) The second vector.
@@ -106,7 +106,7 @@ class Vector(object):
         theta_radians = acos((self.dot_product(w) / Decimal(self.magnitude() * w.magnitude())))
         return [theta_radians, degrees(theta_radians)]
 
-    def is_parallel(self, w) -> bool:
+    def is_parallel(self, w: 'Vector') -> bool:
         '''
         Description: Return whether or not 2 vectors are parallel (i.e, 3v is parallel with v, 0v, etc.).
         :param w: (Vector) The second vector.
@@ -134,10 +134,10 @@ class Vector(object):
             except ZeroDivisionError:
                 raise("ZeroDivisionError: is_parallel")
 
-    def is_orthogonal(self, w) -> bool:
+    def is_orthogonal(self, w: 'Vector') -> bool:
         '''
         Description: Return whether or not 2 vectors are orthogonal (i.e., the dot product is 0; this means either 1 must be a zero vector, or the vectors are at right angles).
-        :param w:
+        :param w: (Vector) the second vector.
         :return: is orthogonal
         '''
         if self.dimension != w.dimension:
@@ -156,42 +156,56 @@ class Vector(object):
                 return False
         return True
 
+    def get_projection(self, b: 'Vector') -> 'Vector':
+        '''
+        Description: Given a basis vector, b, find the projection of v onto b.
+        :param b: (Vector) the basis Vector
+        :return: (Vector) the projection of V onto b.
+        '''
+
+        # v = v parallel (to b, same as proj_b (v)) + v perpendicular (orth to b)
+        return (b.normalization() * (self.dot_product(b.normalization())))
+
+    def get_perpendicular(self, b: 'Vector') -> 'Vector':
+        '''
+        Description: Given a basis vector, b, find the vector perpendicular to v.
+        :param b: (Vector) the basis vector.
+        :return: Return the Vector perpendicular to v.
+        '''
+        # v perpendicular (orth to b) = v - v parallel (parallel to b)
+        return self - self.get_projection(b)
+
+
 getcontext().prec = 7
-# v1 = Vector([7.887, 4.138])
-# w1 = Vector([-8.802, 6.776])
-# v2 = Vector([-5.955, -4.904, -1.874])
-# w2 = Vector([-4.496, -8.755, 7.103])
-# print(v1.dot_product(w1))
-# print(v2.dot_product(w2))
 
-# v3 = Vector([3.183, -7.627])
-# w3 = Vector([-2.668, 5.319])
-# print(v3.angle(w3)[0])
-# v4 = Vector([7.35, 0.221, 5.188])
-# w4 = Vector([2.751, 8.259, 3.985])
-# print(v4.angle(w4)[1])
-
-v1 = Vector([-7.579, -7.88])
-w1 = Vector([22.737, 23.64])
-# print(v1.is_parallel(w1))
-# print(v1.is_orthogonal(w1))
-v2 = Vector([-2.029, 9.97, 4.172])
-w2 = Vector([-9.231, -6.639, -7.245])
-# print(v2.is_parallel(w2))
-# print(v2.is_orthogonal(w2))
-v3 = Vector([-2.328, -7.284, -1.214])
-w3 = Vector([-1.821, 1.072, -2.940])
-# for coordinate in v3.coordinates:
-#     print(coordinate)
-# print(v3)
-# print(w3)
-# print(v3.is_parallel(w3))
-# print(v3.is_orthogonal(w3))
-v4 = Vector([2.118, 4.827])
-w4 = Vector([0, 0])
-print(v4.is_parallel(w4))
-print(v4.is_orthogonal(w4))
-# v5 = Vector([0, 0, 0])
-# print(v5.is_zero_vector())
-
+#
+# v1 = Vector([3.039, 1.879])
+# b1 = Vector([0.825, 2.036])
+# print(v1.get_projection(b1))
+# v2 = Vector([-9.88, -3.264, -8.159])
+# b2 = Vector([-2.155, -9.353, -9.473])
+# print(v2.get_perpendicular(b2))
+v3 = Vector([3.009, -6.172, 3.692, -2.51])
+b3 = Vector([6.404, -9.144, 2.759, 8.718])
+v3_proj = v3.get_projection(b3)
+v3_perp = v3.get_perpendicular(b3)
+print(v3_proj)
+print(v3_perp)
+print(v3_proj + v3_perp)
+# # print(v1.is_parallel(w1))
+# # print(v1.is_orthogonal(w1))
+# v2 = Vector([-2.029, 9.97, 4.172])
+# w2 = Vector([-9.231, -6.639, -7.245])
+# # print(v2.is_parallel(w2))
+# # print(v2.is_orthogonal(w2))
+# v3 = Vector([-2.328, -7.284, -1.214])
+# w3 = Vector([-1.821, 1.072, -2.940])
+#
+# v4 = Vector([2.118, 4.827])
+# w4 = Vector([0, 0])
+# print(v4.is_parallel(w4))
+# print(v4.is_orthogonal(w4))
+# # v5 = Vector([0, 0, 0])
+# # print(v5.is_zero_vector())
+#
 
