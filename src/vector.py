@@ -37,7 +37,7 @@ class Vector(object):
         if self.dimension != v.dimension:
             raise Exception("Error in Plus operation: Vector dimensions are not equal.")
         else:
-            sum_vector = [x+y for x,y in zip(self.coordinates, v.coordinates)]
+            sum_vector = [Decimal(x)+Decimal(y) for x,y in zip(self.coordinates, v.coordinates)]
             return Vector(sum_vector)
 
     def __sub__(self, v: 'Vector') -> 'Vector':
@@ -175,37 +175,54 @@ class Vector(object):
         # v perpendicular (orth to b) = v - v parallel (parallel to b)
         return self - self.get_projection(b)
 
+    def cross_product(self, w: 'Vector') -> 'Vector':
+        '''
+        Description: Determine cross product of 2 vectors, each of length 3.
+        :param w: (Vector) second vector
+        :return: (Vector) cross-product vector.
+        '''
+        index_0 = self.coordinates[1]*w.coordinates[2] - w.coordinates[1]*self.coordinates[2]
+        index_1 = -1 * ((self.coordinates[0]*w.coordinates[2]) -  (w.coordinates[0] * self.coordinates[2]))
+        index_2 = self.coordinates[0]*w.coordinates[1] - self.coordinates[1]*w.coordinates[0]
+        return Vector([index_0, index_1, index_2])
 
-getcontext().prec = 7
+    def area_parallelogram(self, w: 'Vector') -> Decimal:
+        '''
+        Description: Return the area of the parallelogram spanned by v and w.
+        :param w: (Vector) second vector
+        :return: (Decimal) area of the parallelogram.
+        '''
+        cross_product = self.cross_product(w)
+        return cross_product.magnitude()
 
-#
-# v1 = Vector([3.039, 1.879])
-# b1 = Vector([0.825, 2.036])
-# print(v1.get_projection(b1))
-# v2 = Vector([-9.88, -3.264, -8.159])
-# b2 = Vector([-2.155, -9.353, -9.473])
-# print(v2.get_perpendicular(b2))
-v3 = Vector([3.009, -6.172, 3.692, -2.51])
-b3 = Vector([6.404, -9.144, 2.759, 8.718])
-v3_proj = v3.get_projection(b3)
-v3_perp = v3.get_perpendicular(b3)
-print(v3_proj)
-print(v3_perp)
-print(v3_proj + v3_perp)
+    def area_triangle(self, w: 'Vector') -> Decimal:
+        '''
+        Description: Return the area of the triangle spanned by v and w.
+        :param w: (Vector) second vector.
+        :return: (Decimal) area of the triangle.
+        '''
+        return Decimal('0.5')*self.area_parallelogram(w)
+
+
+
+getcontext().prec = 9
+v = Vector([1.5, 9.547, 3.691])
+w = Vector([-6.007, 0.124, 5.772])
+# print(v.cross_product(w))
+# print(v.dot_product(v.cross_product(w)))
+# print(w.dot_product(v.cross_product(w)))
+# print(v.area_parallelogram(w))
+print(v.area_triangle(w))
+
+
+# v3 = Vector(['3.009', '-6.172', '3.692', '-2.51'])
+# b3 = Vector(['6.404', '-9.144', '2.759', '8.718'])
+# v3_proj = v3.get_projection(b3)
+# v3_perp = v3.get_perpendicular(b3)
+# print("sum: %s" % (v3_proj + v3_perp))
+# print("v3: %s" % v3)
+# print(v3 == (v3_proj + v3_perp))
 # # print(v1.is_parallel(w1))
 # # print(v1.is_orthogonal(w1))
-# v2 = Vector([-2.029, 9.97, 4.172])
-# w2 = Vector([-9.231, -6.639, -7.245])
-# # print(v2.is_parallel(w2))
-# # print(v2.is_orthogonal(w2))
-# v3 = Vector([-2.328, -7.284, -1.214])
-# w3 = Vector([-1.821, 1.072, -2.940])
-#
-# v4 = Vector([2.118, 4.827])
-# w4 = Vector([0, 0])
-# print(v4.is_parallel(w4))
-# print(v4.is_orthogonal(w4))
-# # v5 = Vector([0, 0, 0])
-# # print(v5.is_zero_vector())
-#
+
 
